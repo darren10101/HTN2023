@@ -1,8 +1,4 @@
 <script lang="ts">
-    import { PUBLIC_MAPS_API_KEY } from '$env/static/public';
-    // AIzaSyB6fVnvwUCD6VhnheY7a5C_8Yp6G3PzkNo (doesnt work)
-    // AIzaSyAGxxOyVM7lusToG_aYP4KYolhjldob7Bg
-    // import * as google from 'google';
     import { onMount } from 'svelte';
 
     let waypoints = ['27 duke of york street, markham, ontario', 'university of waterloo'];
