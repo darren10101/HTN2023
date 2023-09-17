@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { places } from "$lib/stores/places";
   import { fly } from "svelte/transition";
+
   const locations = places();
   let location: string;
   let option: string;
