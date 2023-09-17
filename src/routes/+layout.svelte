@@ -14,6 +14,7 @@
     <a href="/">Home</a>
     <a href="/explore">Explore</a>
     <a href="/travel">Travel</a>
+    <a href="/details">Travel Details</a>
   </div>
 </nav>
 <Background />
@@ -29,7 +30,7 @@
     display: flex;
     justify-content: space-between;
     height: 4rem;
-    background-color: rgba(#fff, 0.4);
+    background-color: rgba($background, 0.4);
     backdrop-filter: blur(1em);
     box-shadow: 0 0.1em 0.2em rgba(#000, 0.2);
     transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;

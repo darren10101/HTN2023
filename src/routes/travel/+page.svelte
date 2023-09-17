@@ -6,8 +6,10 @@
     import dragIndicator from '$lib/images/drag.svg';
 
     const locations = places();
-    let transportation: string;
-    let newDestination: string = "";
+    let transportation: string = 'driving';
+    let travelMode = null;
+    
+    let newLocation: string = "";
     let totalDistance = 0;
     let totalTime = 0;
 
@@ -20,14 +22,19 @@
     let map = null;
 
     function onChangeHandler () {
-        calculateAndDisplayRoute(directionsService, directionsRenderer, $locations);
+        setTimeout(
+            ()=>{
+                calculateAndDisplayRoute(directionsService, directionsRenderer, $locations);
+
+            }
+        )
 
         const directions = directionsRenderer.getDirections();
 
-        if (directions) {
-            totalDistance = computeTotalDistance(directions);
-            totalTime = computeTotalTime();
-        }
+        // if (directions) {
+        //     totalDistance = computeTotalDistance(directions);
+        //     totalTime = computeTotalTime();
+        // }
     };
 
     function initMap() {
@@ -45,6 +52,7 @@
         directionsRenderer.setMap(map);
         
         $: navigating && onChangeHandler();
+        // $: travelMode = transportation==='driving'?google.maps.TravelMode.DRIVING:transportation==='walking'?google.maps.TravelMode.WALKING:transportation==='bicycling'?google.maps.TravelMode.BICYCLING:google.maps.TravelMode.TRANSIT;
 
         onChangeHandler();
     }
@@ -64,12 +72,14 @@
             }
         }
         if (wp.length > 0) {
+            // console.log(travelMode)
             service
                 .route({
                     origin: wp[0],
                     destination: wp[wp.length - 1],
                     waypoints: wayp,
-                    travelMode: getTravelMode()
+                    // travelMode: travelMode ?? google.maps.TravelMode.DRIVING,
+                    travelMode: transportation==='driving'?google.maps.TravelMode.DRIVING:transportation==='walking'?google.maps.TravelMode.WALKING:transportation==='bicycling'?google.maps.TravelMode.BICYCLING:google.maps.TravelMode.TRANSIT
                 })
                 .then((result: google.maps.DirectionsResult) => {
                     display.setDirections(result);
@@ -81,21 +91,20 @@
                 });
         }
     }
-
-    function getTravelMode(): google.maps.TravelMode {
-        switch (transportation) {
-            case 'driving':
-                return google.maps.TravelMode.DRIVING;
-            case 'walking':
-                return google.maps.TravelMode.WALKING;
-            case 'bicycling':
-                return google.maps.TravelMode.BICYCLING;
-            case 'transit':
-                return google.maps.TravelMode.TRANSIT;
-            default:
-                return google.maps.TravelMode.DRIVING;
-        }
-    }
+        // function getTravelMode(): google.maps.TravelMode {
+    //     switch (transportation) {
+    //         case 'driving':
+    //             return google.maps.TravelMode.DRIVING;
+    //         case 'walking':
+    //             return google.maps.TravelMode.WALKING;
+    //         case 'bicycling':
+    //             return google.maps.TravelMode.BICYCLING;
+    //         case 'transit':
+    //             return google.maps.TravelMode.TRANSIT;
+    //         default:
+    //             return google.maps.TravelMode.DRIVING;
+    //     }
+    // }
 
     function sToTime(s) {
         let day = Math.floor(s / (3600 * 24));
@@ -124,7 +133,6 @@
             default:
                 s = 80;
         }
-        console.log((totalDistance / s) * 60 * 60)
         return (totalDistance / s) * 60 * 60;
     }
 
@@ -147,23 +155,23 @@
         if (location) locations.remove(location);
         onChangeHandler();
     }
-    function addLocation(location: string) {
+    function addLocation() {
+        const directionsService = new google.maps.DirectionsService();
         directionsService
-        .route({
-          origin: result,
-          destination: result,
-          waypoints: [],
-          travelMode: google.maps.TravelMode.DRIVING,
-        })
-        .then((r: google.maps.DirectionsResult) => {
-          if (!(result.toLowerCase().trim() === location.toLowerCase().trim() || result.toLowerCase().trim() === "")) {
-            searchResults = [...searchResults, result];
-          }
-        })
-        .catch((e) => {
-        });
-        locations.add(location);
-        onChangeHandler();
+            .route({
+                origin: newLocation,
+                destination: newLocation,
+                waypoints: [],
+                travelMode: google.maps.TravelMode.DRIVING,
+            })
+            .then((r: google.maps.DirectionsResult) => {
+                locations.add(newLocation);
+                onChangeHandler();
+                newLocation = "";
+            })
+            .catch((e) => {
+                alert("Invalid location");
+            });
     }
     interface ListItem {
         id: string | number;
@@ -202,6 +210,11 @@
                 <option value="transit">Transit</option>
             </select>
         </div>
+        {#if $locations.length === 0}
+            <h2 class="noLocations">
+                Add a destination in "Explore" to get started!
+            </h2>
+        {/if}
         <section use:dndzone={{ items: items }} on:consider={handleConsider} on:finalize={handleFinalize}>
             {#each items as item (item.id)}
                 <div>
@@ -215,14 +228,14 @@
         </section>
         <div class="add">
             <h2>Add a Destination:</h2>
-            <form>
+            <form on:submit={addLocation}>
                 <input type="text" placeholder="Add a destination here" bind:value={newLocation}/>
-                <button type="submit" on:submit={addLocation}>Add</button>
+                <button type="submit">Add</button>
             </form>
         </div>
     </div>
     <div id="map"></div>
-    <h3 class="distance">{Math.round(totalDistance)} km | {sToTime(totalTime)}</h3>
+    <!-- <h3 class="distance">{Math.round(totalDistance)} km | {sToTime(totalTime)}</h3> -->
 </main>
 
 
@@ -240,8 +253,8 @@
             grid-template-columns: 1fr;
             grid-template-rows: auto 1fr auto;
             div {
-                padding: 0;
-                margin: 1rem 3rem;
+                padding: 0 3rem;
+                margin: 0;
                 display: flex;
                 gap: 2rem;
                 height: fit-content;
@@ -265,6 +278,14 @@
                     }
                 }
             }
+            h2.noLocations {
+                text-align: center;
+                font-size: 2rem;
+                font-weight: 400;
+                color: $text;
+                margin: auto 4rem;
+                padding: 0;
+            }
             section {
                 height: 100%;
                 display: flex;
@@ -284,6 +305,7 @@
                     padding: 1rem;
                     border-radius: 1rem;
                     background-color: rgba(255, 255, 255, 0.5);
+                    box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.2);
                     span.dragContent {
                         display: flex;
                         align-items: center;
@@ -314,6 +336,7 @@
                 display: flex;
                 width: 100%;
                 background-color: rgba(255, 255, 255, 0.5);
+                box-shadow: 0 -0.05rem 0.2rem rgba(0, 0, 0, 0.2);
                 margin: 0;
                 padding: 0.5rem 3rem;
                 form {

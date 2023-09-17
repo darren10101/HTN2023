@@ -84,7 +84,7 @@
       margin-bottom: 2rem;
       padding: 0 4rem 0 4rem;
       border-radius: 1rem;
-      background-color: rgba(#fff, 0.4);
+      background-color: rgba($background, 0.4);
       box-shadow: 0.1rem 0.1rem 0.2rem rgba(#000, 0.2);
       width: calc(100% - 8rem);
       &.item {

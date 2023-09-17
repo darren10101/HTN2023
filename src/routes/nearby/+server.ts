@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({request}) => {
       authorization: `Bearer ${COHERE_API_KEY}`,
     },
     data: {
-      max_tokens: 100,
+      max_tokens: getMaxTokens(type),
       temperature: 0,
       truncate: 'END',
       return_likelihoods: 'NONE',
@@ -34,6 +34,15 @@ function getPrompt(location: string, type: string) {
     return `Provide a list in order of preference of the top 10 ${type.substring(5)} to go on your next vacation to ${location}. Do not display numbering and line breaks.`
   }
   else if (type == 'description') {
-    return `Give a detailed explanation of ${location}, by highlighting its attractions to tourists. Use one paragraph.`
+    return `Give a very profound and detailed explanation of ${location}, by highlighting its attractions to tourists, its time zone, and other important information. Write this in one paragraph.`
+  }
+}
+
+function getMaxTokens(type: string) {
+  if (type.includes('list')) {
+    return 100
+  }
+  else if (type == 'description') {
+    return 200
   }
 }

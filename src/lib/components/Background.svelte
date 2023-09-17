@@ -15,7 +15,7 @@
 </script>
 
 <svelte:window bind:scrollY={y} />
-<div style:background={`linear-gradient(${135+y/40}deg,rgba(${r}, ${g}, ${b}, 0.7) 0%,rgb(238, 237, 237) 85%)`} />
+<div style:background={`linear-gradient(${135+y/30}deg,rgba(${r}, ${g}, ${b}, 0.8) 0%,rgb(238, 237, 237) 85%)`} />
 
 <style lang="scss">
   div {
