@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { MAPS_API_KEY } from '$env/static/private';
+// import { MAPS_API_KEY } from '$env/static/private';
 
 
 export const POST: RequestHandler = async ({request}) => {
   const { location, nextLocation } = await request.json();
-  let url: string = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${nextLocation}&origins=${location}&units=metric&key=${MAPS_API_KEY}`;
+  let url: string = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${nextLocation}&origins=${location}&units=metric&key=AIzaSyAGxxOyVM7lusToG_aYP4KYolhjldob7Bg`;
   const options = {
     method: 'POST',
     url: url,
