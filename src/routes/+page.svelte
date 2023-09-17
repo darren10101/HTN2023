@@ -1,5 +1,4 @@
 <script lang="ts">
-  import background from '$lib/assets/background.jpg';
 </script>
 
 <svelte:head>

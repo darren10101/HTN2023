@@ -1,7 +1,5 @@
 <script lang="ts">
-  import placeholder from "$lib/images/placeholder.jpg";
   import "$lib/styles/global.scss";
-  import logo from "$lib/images/logo.png";
   import Background from "$components/Background.svelte";
 
 </script>
