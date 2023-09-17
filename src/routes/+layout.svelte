@@ -1,6 +1,6 @@
 <script lang="ts">
   import "$lib/styles/global.scss";
-  import Background from "$components/Background.svelte";
+  import Background from "$lib/components/Background.svelte";
 
 </script>
 
