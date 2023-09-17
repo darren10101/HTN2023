@@ -3,7 +3,7 @@ import { COHERE_API_KEY } from '$env/static/private';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({request}) => {
-  const { location } = await request.json();
+  const { location, type } = await request.json();
   const options = {
     method: 'POST',
     url: 'https://api.cohere.ai/v1/generate',
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({request}) => {
       temperature: 0,
       truncate: 'END',
       return_likelihoods: 'NONE',
-      prompt: `Provide a list in order of preference of the top 10 places to go on your next vacation to ${location}. Do not display numbering and line breaks.`
+      prompt: getPrompt(location, type)
     }
   }
   const response = await axios.request(options);
@@ -26,5 +26,14 @@ export const POST: RequestHandler = async ({request}) => {
     return json({ data: text.slice(1).split('\n').slice(0, -1).map((place: string) => place.slice(3)) }, { status: 200 })
   } else {
     return json({ data: text.slice(1).split('\n').slice(0, -1) }, { status: 200 })
+  }
+}
+
+function getPrompt(location: string, type: string) {
+  if (type.includes('list')) {
+    return `Provide a list in order of preference of the top 10 ${type.substring(5)} to go on your next vacation to ${location}. Do not display numbering and line breaks.`
+  }
+  else if (type == 'description') {
+    return `Give a detailed explanation of ${location}, by highlighting its attractions to tourists. Use one paragraph.`
   }
 }

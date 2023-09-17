@@ -1,8 +1,8 @@
 <script lang="ts">
   import placeholder from "$lib/images/placeholder.jpg";
   import "$lib/styles/global.scss";
-  import NavLink from "$components/NavLink.svelte";
   import logo from "$lib/images/logo.png";
+  import Background from "$components/Background.svelte";
 
 </script>
 
@@ -16,6 +16,7 @@
     <a href="/travel">Travel</a>
   </div>
 </nav>
+<Background />
 <slot />
 
 <style lang="scss">
@@ -33,6 +34,7 @@
     box-shadow: 0 0.1em 0.2em rgba(#000, 0.2);
     transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
     a {
+      margin-left: 1rem;
       img {
         height: 100%;
       }
